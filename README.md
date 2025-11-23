@@ -139,11 +139,11 @@ Pastikan kolom `price` numeric (tanpa simbol), `seats` integer.
 
 ---
 
-## 🔁 Training ulang model
+## 🔁 Training ulang model atau Explore Lanjutan
 
 Langkah singkat:
 
-1. Jalankan `train.py` dengan dataset baru.
+1. Buat `train.py` dengan dataset baru.
 2. Script akan melakukan: cleaning → scaling → K‑Means → hybrid sampling → CV → training → simpan `model.pkl`.
 
 Contoh:
