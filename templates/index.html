@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Clustering Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">AutoCluster AI</div>
+        <div class="nav-links">
+            <a href="/" class="active">Dataset Explorer</a>
+            <a href="/predict">Prediction Game</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Car Dataset & Classification Results</h1>
+            <p>Menjelajahi hasil clustering K-Means pada dataset mobil global.</p>
+        </header>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        {% for col in columns %}
+                        <th>
+                            {% if col == 'cluster_name' %} Classification Label
+                            {% else %} {{ col }}
+                            {% endif %}
+                        </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data %}
+                    <tr>
+                        {% for col in columns %}
+                        <td>
+                            {% if col == 'cluster_name' %}
+                                <span class="badge">{{ row[col] }}</span>
+                            {% else %}
+                                {{ row[col] }}
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination">
+            {% if page > 1 %}
+            <a href="{{ url_for('index', page=page-1) }}" class="btn-page">&laquo; Previous</a>
+            {% else %}
+            <span class="btn-page disabled">&laquo; Previous</span>
+            {% endif %}
+
+            <span class="page-info">Page {{ page }} of {{ total_pages }}</span>
+
+            {% if page < total_pages %}
+            <a href="{{ url_for('index', page=page+1) }}" class="btn-page">Next &raquo;</a>
+            {% else %}
+            <span class="btn-page disabled">Next &raquo;</span>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>

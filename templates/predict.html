@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predict Car Type</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">AutoCluster AI</div>
+        <div class="nav-links">
+            <a href="/">Dataset Explorer</a>
+            <a href="/predict" class="active">Prediction Game</a>
+        </div>
+    </nav>
+
+    <div class="container prediction-container">
+        <div class="card">
+            <div class="card-header">
+                <h2>AI Car Classifier</h2>
+                <p>Masukkan spesifikasi mobil untuk menebak kategorinya.</p>
+            </div>
+            
+            <div class="card-body">
+                <form method="POST" action="/predict">
+                    <div class="form-group">
+                        <label for="price">Car Price ($ USD)</label>
+                        <input type="number" id="price" name="price" placeholder="e.g. 25000" value="{{ last_price }}" required>
+                        <small>Harga mobil dalam US Dollar.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="seats">Number of Seats</label>
+                        <input type="number" id="seats" name="seats" placeholder="e.g. 5" value="{{ last_seats }}" required>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Predict Category</button>
+                </form>
+            </div>
+
+            {% if prediction %}
+            <div class="result-box">
+                <h3>Hasil Prediksi AI:</h3>
+                <div class="prediction-label">{{ prediction }}</div>
+                <p>Diklasifikasikan menggunakan Random Forest Model</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>
