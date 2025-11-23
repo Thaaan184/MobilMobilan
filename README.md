@@ -90,9 +90,6 @@ venv\\Scripts\\activate   # Windows
 pip install -r requirements.txt
 # atau manual:
 # pip install flask pandas numpy scikit-learn matplotlib imbalanced-learn
-```
-
-> Sertakan file `requirements.txt` dengan versi yang direkomendasikan (contoh di bawah).
 
 ---
 
@@ -156,30 +153,5 @@ python train.py --data data/cars.csv --k 6 --out models/model.pkl
 ```
 
 Argument opsional: `--k`, `--cv-folds`, `--seed`, `--save-figs`.
-
----
-
-## 📊 Evaluasi & Analisis
-
-* **Clustering:** tampilkan Silhouette Score, Davies‑Bouldin, plot Elbow.
-* **Classification:** tampilkan confusion matrix, classification report (precision/recall/f1), ROC curve (jika multiclass pakai one-vs-rest).
-* Simpan laporan evaluasi di `reports/`.
-
----
-
-## 🛠 Deploy & Produksi (ringkas)
-
-* **Dockerize** aplikasi Flask untuk konsistensi environment.
-* Gunakan Gunicorn + Nginx untuk production serving.
-* Simpan model di object storage (S3/GCS) dan load pada startup, atau gunakan model server (TorchServe / BentoML) bila kebutuhan lebih kompleks.
-* Tambahkan healthcheck endpoint `/health`.
-
----
-
-## ✍️ Catatan untuk pengembang
-
-* Sertakan `requirements.txt` yang konsisten (mis. scikit-learn==1.2.2, imbalanced-learn==0.11.0).
-* Simpan notebook exploratory (EDA) di `notebooks/`.
-* Tambahkan sample dataset kecil di `data/sample_cars.csv` untuk demo.
 
 ---
