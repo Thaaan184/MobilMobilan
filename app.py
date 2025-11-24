@@ -10,9 +10,9 @@ app = Flask(__name__)
 
 # --- KONFIGURASI PATH ---
 # Pastikan path ini sesuai dengan struktur folder kamu
-CSV_PATH = 'Hasil/KMeans_Result_K6.csv'
-MODEL_PATH = 'MiniGames_Assets/car_prediction_model.pkl'
-LABEL_PATH = 'MiniGames_Assets/cluster_labels.json'
+CSV_PATH = 'WebData/DatasetFinal.csv'
+MODEL_PATH = 'WebData/car_prediction_model.pkl'
+LABEL_PATH = 'WebData/cluster_labels.json'
 
 # --- LOAD ASET SAAT APLIKASI DIMULAI ---
 print("Loading Assets...")
@@ -66,7 +66,7 @@ def index():
     start = (page - 1) * per_page
     end = start + per_page
     
-    # Filter Kolom yang mau ditampilkan (Sesuai request)
+    # Filter Kolom yang mau ditampilkan 
     columns_to_show = [
         'Company Names', 'Cars Names', 'Engines', 'CC/Battery Capacity', 
         'HorsePower', 'Total Speed', 'Performance(0 - 100 )KM/H', 
