@@ -190,75 +190,83 @@ def sales():
                            page=page,
                            total_pages=total_pages)
 
-# --- ROUTE BARU: TAMBAH MOBIL ---
 @app.route('/add_car', methods=['GET', 'POST'])
 def add_car():
     error = None
+    success_data = None                     # <-- untuk kirim ke template kalau sukses
+
     if request.method == 'POST':
         try:
-            # Ambil input dari form
-            company_names = request.form['company_names']
-            cars_names = request.form['cars_names']
-            engines = request.form['engines']
-            cc_battery = request.form['cc_battery']
-            horsepower = request.form['horsepower']
-            total_speed = request.form['total_speed']
-            performance = request.form['performance']
-            cars_prices = request.form['cars_prices']
-            fuel_types = request.form['fuel_types']
-            seats = request.form['seats']
-            torque = request.form['torque']
+            # --- Ambil semua input ---
+            company_names = request.form['company_names'].strip()
+            cars_names    = request.form['cars_names'].strip()
+            engines       = request.form['engines'].strip()
+            cc_battery    = request.form['cc_battery'].strip()
+            horsepower    = request.form['horsepower'].strip()
+            total_speed   = request.form['total_speed'].strip()
+            performance   = request.form['performance'].strip()
+            cars_prices   = request.form['cars_prices'].strip()
+            fuel_types    = request.form['fuel_types'].strip()
+            seats         = request.form['seats'].strip()
+            torque        = request.form['torque'].strip()
 
-            # Generate Car_Full_Name
+            # --- Generate field otomatis ---
             car_full_name = f"{company_names.upper()} {cars_names.upper()}"
 
-            # Clean price and seats
             price_cleaned = clean_price(cars_prices)
             seats_cleaned = clean_seats(seats)
 
             if price_cleaned is None or seats_cleaned is None:
-                raise ValueError("Input harga atau kursi tidak valid!")
+                raise ValueError("Harga atau jumlah kursi tidak valid!")
 
-            # Predict cluster jika model ada
-            if model:
-                cluster_pred = model.predict([[price_cleaned, seats_cleaned]])[0]
-            else:
-                raise ValueError("Model tidak tersedia!")
+            if not model:
+                raise ValueError("Model tidak ditemukan!")
 
-            # Load CSV existing
+            # --- Prediksi cluster ---
+            cluster_pred = int(model.predict([[price_cleaned, seats_cleaned]])[0])
+            cluster_name = cluster_labels.get(cluster_pred, f"Cluster {cluster_pred}")
+
+            # --- Simpan ke CSV ---
+            new_row = pd.DataFrame([{
+                'Company Names': company_names,
+                'Cars Names': cars_names,
+                'Engines': engines,
+                'CC/Battery Capacity': cc_battery,
+                'HorsePower': horsepower,
+                'Total Speed': total_speed,
+                'Performance(0 - 100 )KM/H': performance,
+                'Cars Prices': cars_prices,
+                'Fuel Types': fuel_types,
+                'Seats': seats,
+                'Torque': torque,
+                'Car_Full_Name': car_full_name,
+                'Price_Cleaned': price_cleaned,
+                'Seats_Cleaned': seats_cleaned,
+                'cluster': cluster_pred
+            }])
+
             if os.path.exists(CSV_PATH):
                 df = pd.read_csv(CSV_PATH)
+                df = pd.concat([df, new_row], ignore_index=True)
             else:
-                raise FileNotFoundError("CSV tidak ditemukan!")
+                df = new_row
 
-            # Buat row baru
-            new_row = pd.DataFrame({
-                'Company Names': [company_names],
-                'Cars Names': [cars_names],
-                'Engines': [engines],
-                'CC/Battery Capacity': [cc_battery],
-                'HorsePower': [horsepower],
-                'Total Speed': [total_speed],
-                'Performance(0 - 100 )KM/H': [performance],
-                'Cars Prices': [cars_prices],
-                'Fuel Types': [fuel_types],
-                'Seats': [seats],
-                'Torque': [torque],
-                'Car_Full_Name': [car_full_name],
-                'Price_Cleaned': [price_cleaned],
-                'Seats_Cleaned': [seats_cleaned],
-                'cluster': [cluster_pred]
-            })
+            df.to_csv(CSV_PATH, index=False)
 
-            # Append dan simpan
-            df_updated = pd.concat([df, new_row], ignore_index=True)
-            df_updated.to_csv(CSV_PATH, index=False)
+            # --- Kirim data sukses ke template (untuk modal) ---
+            success_data = {
+                'car_full_name': car_full_name,
+                'cluster_name': cluster_name,
+                'price': f"${int(price_cleaned):,}",
+                'seats': int(seats_cleaned)
+            }
 
-            return redirect(url_for('index'))  # Redirect ke list mobil setelah sukses
         except Exception as e:
             error = str(e)
 
-    return render_template('add_car.html', error=error)
+    return render_template('add_car.html',
+                           error=error,
+                           success=success_data)   # <-- kirim success data
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1201,3 +1201,10 @@ Mazda,787B (Race Car),2.6L Wankel Rotary Engine,"2,620 cc",700 hp,320 km/h,3.5 s
 Toyota,4Runner (6th Gen),2.4L Turbo I4 (i-FORCE MAX Hybrid),2393 cc + Battery,326 hp,180 km/h,6.8 sec,"$50,000 ",Hybrid,7,630 Nm,Toyota 4Runner (6th Gen),50000.0,7.0,4
 rawr,rarw220,V12,3000 CC,490 HP,399 KM/H,1 sec,9000000,Petrol,3,800 Nm,RAWR RARW220,9000000.0,3.0,3
 Test,test,test,test,test,test,test,20000000,Petrol,3,900 b,TEST TEST,20000000.0,3.0,1
+rawr,test,test,test,test,test,100,25000,diesel,5,300,RAWR TEST,25000.0,5.0,0
+w,w,w,w,w,ww,w,12312415,w,3,3,W W,12312415.0,3.0,3
+test,test,test,test,test,t,t,900000,te,3,45,TEST TEST,900000.0,3.0,2
+test,test,test,test,test,t,t,900000,te,3,45,TEST TEST,900000.0,3.0,2
+test,test,test,test,test,t,t,900000,te,3,45,TEST TEST,900000.0,3.0,2
+test,test,test,test,test,t,t,900000,te,3,45,TEST TEST,900000.0,3.0,2
+test,test,test,test,test,t,t,900000,te,3,45,TEST TEST,900000.0,3.0,2

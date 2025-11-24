@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Mobil - AutoCluster AI</title>
+    <title>Tambah Mobil - MobilMobilan</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
@@ -15,7 +15,7 @@
             <a href="/">List Mobil</a>
             <a href="/add_car" class="active">Tambah Mobil</a>
             <a href="/predict">Beli Mobil</a>
-            <a href="/sales" >List Penjualan</a>
+            <a href="/sales">List Penjualan</a>
         </div>
     </nav>
 
@@ -23,66 +23,114 @@
         <div class="card">
             <div class="card-header">
                 <h2>Tambah Mobil Baru</h2>
-                <p>Isi detail mobil, AI akan prediksi cluster otomatis dengan otak model Random Forest</p>
+                <p>Isi detail mobil – AI akan menentukan jenis mobil secara otomatis</p>
             </div>
             
             <div class="card-body">
+
                 {% if error %}
-                <div class="result-box" style="background-color: #f8d7da; color: #721c24;">
+                <div class="result-box" style="background:#f8d7da;color:#721c24;">
                     Error: {{ error }}
                 </div>
                 {% endif %}
-                
+
                 <form method="POST">
+                    <!-- semua input tetap sama seperti sebelumnya -->
                     <div class="form-group">
-                        <label for="company_names">Company Names</label>
-                        <input type="text" id="company_names" name="company_names" required>
+                        <label>Company Names</label>
+                        <input type="text" name="company_names" required>
                     </div>
                     <div class="form-group">
-                        <label for="cars_names">Cars Names</label>
-                        <input type="text" id="cars_names" name="cars_names" required>
+                        <label>Cars Names</label>
+                        <input type="text" name="cars_names" required>
                     </div>
                     <div class="form-group">
-                        <label for="engines">Engines</label>
-                        <input type="text" id="engines" name="engines" required>
+                        <label>Engines</label>
+                        <input type="text" name="engines" required>
                     </div>
                     <div class="form-group">
-                        <label for="cc_battery">CC/Battery Capacity</label>
-                        <input type="text" id="cc_battery" name="cc_battery" required>
+                        <label>CC/Battery Capacity</label>
+                        <input type="text" name="cc_battery" required>
                     </div>
                     <div class="form-group">
-                        <label for="horsepower">HorsePower</label>
-                        <input type="text" id="horsepower" name="horsepower" required>
+                        <label>HorsePower</label>
+                        <input type="text" name="horsepower" required>
                     </div>
                     <div class="form-group">
-                        <label for="total_speed">Total Speed</label>
-                        <input type="text" id="total_speed" name="total_speed" required>
+                        <label>Total Speed</label>
+                        <input type="text" name="total_speed" required>
                     </div>
                     <div class="form-group">
-                        <label for="performance">Performance (0 - 100 KM/H)</label>
-                        <input type="text" id="performance" name="performance" required>
+                        <label>Performance (0 - 100 KM/H)</label>
+                        <input type="text" name="performance" required>
                     </div>
                     <div class="form-group">
-                        <label for="cars_prices">Cars Prices (e.g., $50,000 or $40,000-$60,000)</label>
-                        <input type="text" id="cars_prices" name="cars_prices" required>
+                        <label>Cars Prices <small>(contoh: $50,000 atau $40,000-$60,000)</small></label>
+                        <input type="text" name="cars_prices" required>
                     </div>
                     <div class="form-group">
-                        <label for="fuel_types">Fuel Types</label>
-                        <input type="text" id="fuel_types" name="fuel_types" required>
+                        <label>Fuel Types</label>
+                        <input type="text" name="fuel_types" required>
                     </div>
                     <div class="form-group">
-                        <label for="seats">Seats (numeric)</label>
-                        <input type="number" id="seats" name="seats" required>
+                        <label>Seats (angka)</label>
+                        <input type="number" name="seats" required>
                     </div>
                     <div class="form-group">
-                        <label for="torque">Torque</label>
-                        <input type="text" id="torque" name="torque" required>
+                        <label>Torque</label>
+                        <input type="text" name="torque" required>
                     </div>
+
                     <button type="submit" class="btn-submit">Tambah Mobil</button>
                 </form>
             </div>
         </div>
     </div>
+
+{% if success %}
+<div id="successModal" class="modal" style="display:block;">
+    <div class="modal-content" style="padding-top: 30px;">
+
+        <h2 style="
+            color:#27ae60;
+            margin:0;
+            text-align:center;
+            font-weight:700;
+        ">
+            Mobil Berhasil Ditambahkan
+        </h2>
+
+        <div class="form-group" style="text-align:center; margin-top:20px;">
+            <p style="font-size:1.1rem; font-weight:600; margin-bottom:8px;">
+                {{ success.car_full_name }}
+            </p>
+
+            <div class="prediction-label">
+                {{ success.cluster_name }}
+            </div>
+
+            <p style="margin-top:10px; opacity:0.8;">
+                Harga: {{ success.price }} USD <br>
+                Kursi: {{ success.seats }}
+            </p>
+        </div>
+
+        <button class="btn-submit" onclick="window.location.href='/'">
+            Lihat Semua Mobil
+        </button>
+
+    </div>
+</div>
+{% endif %}
+
+
+    <script>
+        // Tutup modal kalau klik di luar area modal
+        window.onclick = function(e) {
+            const modal = document.getElementById('successModal');
+            if (e.target === modal) modal.style.display = 'none';
+        }
+    </script>
 
 </body>
 </html>
