@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Clustering Dashboard</title>
+    <title>List Mobil - AutoCluster AI</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
@@ -14,13 +14,14 @@
         <div class="nav-links">
             <a href="/" class="active">List Mobil</a>
             <a href="/predict">Beli Mobil</a>
+            <a href="/sales">List Penjualan</a>
         </div>
     </nav>
 
     <div class="container">
         <header class="page-header">
             <h1>List Dataset Mobil</h1>
-            <p>Menjelajahi hasil clustering K Means mobil global</p>
+            <p>Menjelajahi hasil clustering K-Means mobil global</p>
         </header>
 
         <div class="table-container">
@@ -29,9 +30,7 @@
                     <tr>
                         {% for col in columns %}
                         <th>
-                            {% if col == 'cluster_name' %} Jenis Mobil
-                            {% else %} {{ col }}
-                            {% endif %}
+                            {% if col == 'cluster_name' %}Jenis Mobil{% else %}{{ col }}{% endif %}
                         </th>
                         {% endfor %}
                     </tr>
@@ -56,17 +55,17 @@
 
         <div class="pagination">
             {% if page > 1 %}
-            <a href="{{ url_for('index', page=page-1) }}" class="btn-page">&laquo; Previous</a>
+            <a href="{{ url_for('index', page=page-1) }}" class="btn-page">Previous</a>
             {% else %}
-            <span class="btn-page disabled">&laquo; Previous</span>
+            <span class="btn-page disabled">Previous</span>
             {% endif %}
 
             <span class="page-info">Page {{ page }} of {{ total_pages }}</span>
 
             {% if page < total_pages %}
-            <a href="{{ url_for('index', page=page+1) }}" class="btn-page">Next &raquo;</a>
+            <a href="{{ url_for('index', page=page+1) }}" class="btn-page">Next</a>
             {% else %}
-            <span class="btn-page disabled">Next &raquo;</span>
+            <span class="btn-page disabled">Next</span>
             {% endif %}
         </div>
     </div>

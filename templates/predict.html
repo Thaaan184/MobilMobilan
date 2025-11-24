@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beli Mobil</title>
+    <title>Beli Mobil - AutoCluster AI</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
@@ -14,55 +14,46 @@
         <div class="nav-links">
             <a href="/">List Mobil</a>
             <a href="/predict" class="active">Beli Mobil</a>
+            <a href="/sales">List Penjualan</a>
         </div>
     </nav>
 
     <div class="container prediction-container">
         <div class="card">
             <div class="card-header">
-                <h2>AI Car Recommender</h2>
-                <p>Masukkan spesifikasi mobil untuk menemukan rekomendasi.</p>
+                <h2>AI Rekomendasi Mobil</h2>
+                <p>Berdasarkan harga dan jumlah kursi yang kamu inginkan</p>
             </div>
             
             <div class="card-body">
                 {% if not prediction %}
-                <form method="POST" action="/predict">
+                <form method="POST">
                     <div class="form-group">
-                        <label for="price">Car Price ($ USD)</label>
-                        <input type="number" id="price" name="price" placeholder="e.g. 25000" value="{{ last_price }}" required>
-                        <small>Harga mobil dalam US Dollar.</small>
+                        <label for="price">Harga Mobil ($ USD)</label>
+                        <input type="number" id="price" name="price" value="{{ last_price }}" placeholder="25000" required>
                     </div>
-
                     <div class="form-group">
-                        <label for="seats">Number of Seats</label>
-                        <input type="number" id="seats" name="seats" placeholder="e.g. 5" value="{{ last_seats }}" required>
+                        <label for="seats">Jumlah Kursi</label>
+                        <input type="number" id="seats" name="seats" value="{{ last_seats }}" placeholder="5" required>
                     </div>
-
                     <button type="submit" class="btn-submit">Cari Rekomendasi</button>
                 </form>
                 {% else %}
-                <!-- Tampilkan hasil prediksi dan spek input -->
                 <div class="result-box">
                     <h3>Hasil Prediksi AI:</h3>
                     <div class="prediction-label">{{ prediction }}</div>
-                    <p>Dengan spek: Harga ${{ last_price }} USD, {{ last_seats }} Seats</p>
-                    <p>Diklasifikasikan menggunakan Random Forest Model</p>
+                    <p>Harga: ${{ last_price }} USD | Kursi: {{ last_seats }}</p>
                 </div>
-                
-                <!-- Tabel rekomendasi mobil -->
+
                 {% if data %}
                 <div class="table-container">
                     <table>
                         <thead>
                             <tr>
                                 {% for col in columns %}
-                                <th>
-                                    {% if col == 'cluster_name' %} Jenis Mobil
-                                    {% else %} {{ col }}
-                                    {% endif %}
-                                </th>
+                                <th>{% if col == 'cluster_name' %}Jenis Mobil{% else %}{{ col }}{% endif %}</th>
                                 {% endfor %}
-                                <th>Aksi</th> <!-- Kolom baru untuk tombol Beli -->
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -78,7 +69,11 @@
                                 </td>
                                 {% endfor %}
                                 <td>
-                                    <button class="btn-buy" data-car-name="{{ row['Cars Names'] }}">Beli</button>
+                                    <button class="btn-buy"
+                                            data-car-full-name="{{ row['Company Names'] }} {{ row['Cars Names'] }}"
+                                            data-cluster="{{ row['cluster_name'] }}">
+                                        Beli
+                                    </button>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -88,17 +83,15 @@
 
                 <div class="pagination">
                     {% if page > 1 %}
-                    <a href="{{ url_for('predict', page=page-1, price=last_price, seats=last_seats) }}" class="btn-page">&laquo; Previous</a>
+                    <a href="{{ url_for('predict', page=page-1, price=last_price, seats=last_seats) }}" class="btn-page">Previous</a>
                     {% else %}
-                    <span class="btn-page disabled">&laquo; Previous</span>
+                    <span class="btn-page disabled">Previous</span>
                     {% endif %}
-
                     <span class="page-info">Page {{ page }} of {{ total_pages }}</span>
-
                     {% if page < total_pages %}
-                    <a href="{{ url_for('predict', page=page+1, price=last_price, seats=last_seats) }}" class="btn-page">Next &raquo;</a>
+                    <a href="{{ url_for('predict', page=page+1, price=last_price, seats=last_seats) }}" class="btn-page">Next</a>
                     {% else %}
-                    <span class="btn-page disabled">Next &raquo;</span>
+                    <span class="btn-page disabled">Next</span>
                     {% endif %}
                 </div>
                 {% endif %}
@@ -107,86 +100,73 @@
         </div>
     </div>
 
-    <!-- Modal Pop-up untuk Form Pembelian -->
+    <!-- Modal Pembelian -->
     <div id="buyModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Form Pembelian Mobil</h2>
+            <span class="close">×</span>
+            <h2>Form Pembelian</h2>
             <form id="buyForm">
                 <div class="form-group">
-                    <label for="nama">Nama:</label>
-                    <input type="text" id="nama" name="nama" required>
+                    <label>Nama Lengkap</label>
+                    <input type="text" id="nama" required>
                 </div>
                 <div class="form-group">
-                    <label for="alamat">Alamat:</label>
-                    <input type="text" id="alamat" name="alamat" required>
+                    <label>Alamat</label>
+                    <input type="text" id="alamat" required>
                 </div>
                 <div class="form-group">
-                    <label for="no_telp">No Telepon:</label>
-                    <input type="tel" id="no_telp" name="no_telp" required>
+                    <label>No. Telepon</label>
+                    <input type="tel" id="no_telp" required>
                 </div>
-                <input type="hidden" id="car_name" name="car_name">
+                <input type="hidden" id="car_full_name">
+                <input type="hidden" id="cluster">
                 <button type="submit" class="btn-submit">Konfirmasi Pembelian</button>
             </form>
         </div>
     </div>
 
     <script>
-        // JavaScript untuk handle modal
-        var modal = document.getElementById("buyModal");
-        var span = document.getElementsByClassName("close")[0];
-        var btns = document.getElementsByClassName("btn-buy");
+        const modal = document.getElementById("buyModal");
+        const closeBtn = document.getElementsByClassName("close")[0];
+        const buttons = document.getElementsByClassName("btn-buy");
 
-        // Buka modal saat tombol Beli diklik
-        for (var i = 0; i < btns.length; i++) {
-            btns[i].onclick = function() {
-                document.getElementById("car_name").value = this.getAttribute("data-car-name");
+        for (let btn of buttons) {
+            btn.onclick = function() {
+                document.getElementById("car_full_name").value = this.getAttribute("data-car-full-name");
+                document.getElementById("cluster").value = this.getAttribute("data-cluster");
                 modal.style.display = "block";
             }
         }
 
-        // Tutup modal saat klik close
-        span.onclick = function() {
-            modal.style.display = "none";
-        }
+        closeBtn.onclick = () => modal.style.display = "none";
+        window.onclick = (e) => { if (e.target == modal) modal.style.display = "none"; };
 
-        // Tutup modal saat klik di luar
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-
-        // Handle submit form via AJAX
         document.getElementById("buyForm").onsubmit = function(e) {
             e.preventDefault();
-            var formData = {
+            const data = {
                 nama: document.getElementById("nama").value,
                 alamat: document.getElementById("alamat").value,
                 no_telp: document.getElementById("no_telp").value,
-                car_name: document.getElementById("car_name").value
+                Car_Full_Name: document.getElementById("car_full_name").value,
+                cluster: document.getElementById("cluster").value
             };
 
             fetch('/buy', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Pembelian berhasil dikonfirmasi!");
+            .then(r => r.json())
+            .then(res => {
+                if (res.success) {
+                    alert("Pembelian berhasil!");
                     modal.style.display = "none";
+                    this.reset();
                 } else {
-                    alert("Terjadi kesalahan: " + data.error);
+                    alert("Error: " + res.error);
                 }
-            })
-            .catch((error) => {
-                console.error('Error:', error);
             });
-        }
+        };
     </script>
 
 </body>

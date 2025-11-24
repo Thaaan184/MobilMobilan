@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Penjualan - AutoCluster AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">AutoCluster AI</div>
+        <div class="nav-links">
+            <a href="/">List Mobil</a>
+            <a href="/predict">Beli Mobil</a>
+            <a href="/sales" class="active">List Penjualan</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>List Penjualan Mobil</h1>
+            <p>Data semua transaksi pembelian melalui sistem AI</p>
+        </header>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Pembeli</th>
+                        <th>Mobil Dibeli</th>
+                        <th>Jenis Mobil</th>
+                        <th>Tanggal & Waktu</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if orders %}
+                        {% for order in orders %}
+                        <tr>
+                            <td>{{ loop.index + (page - 1) * 20 }}</td>
+                            <td><strong>{{ order.nama }}</strong></td>
+                            <td>{{ order.Car_Full_Name }}</td>
+                            <td><span class="badge">{{ order.cluster }}</span></td>
+                            <td>
+                                {{ order.timestamp[:10] }}<br>
+                                <small>{{ order.timestamp[11:19] }}</small>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5" style="text-align:center; padding:50px; color:#999;">
+                                Belum ada transaksi pembelian.
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if total_pages > 1 %}
+        <div class="pagination">
+            {% if page > 1 %}
+            <a href="{{ url_for('sales', page=page-1) }}" class="btn-page">&laquo; Previous</a>
+            {% else %}
+            <span class="btn-page disabled">&laquo; Previous</span>
+            {% endif %}
+
+            <span class="page-info">Page {{ page }} of {{ total_pages }}</span>
+
+            {% if page < total_pages %}
+            <a href="{{ url_for('sales', page=page+1) }}" class="btn-page">Next &raquo;</a>
+            {% else %}
+            <span class="btn-page disabled">Next &raquo;</span>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>
