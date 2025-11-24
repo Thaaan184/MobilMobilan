@@ -1199,3 +1199,5 @@ Mazda,Luce Rotary Coupe,1.3L Wankel Rotary Engine,"1,308 cc",135 hp,175 km/h,12.
 Mazda,Millenia S,2.5L V6,"2,500 cc",200 hp,220 km/h,8.0 sec,"$30,000 - $35,000",Petrol,5,250 Nm,Mazda Millenia S,32500.0,5.0,0
 Mazda,787B (Race Car),2.6L Wankel Rotary Engine,"2,620 cc",700 hp,320 km/h,3.5 sec,"$5,000,000 - $7,000,000",Petrol,1,500 Nm,Mazda 787B (Race Car),6000000.0,1.0,3
 Toyota,4Runner (6th Gen),2.4L Turbo I4 (i-FORCE MAX Hybrid),2393 cc + Battery,326 hp,180 km/h,6.8 sec,"$50,000 ",Hybrid,7,630 Nm,Toyota 4Runner (6th Gen),50000.0,7.0,4
+rawr,rarw220,V12,3000 CC,490 HP,399 KM/H,1 sec,9000000,Petrol,3,800 Nm,RAWR RARW220,9000000.0,3.0,3
+Test,test,test,test,test,test,test,20000000,Petrol,3,900 b,TEST TEST,20000000.0,3.0,1

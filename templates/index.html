@@ -10,9 +10,10 @@
 <body>
 
     <nav class="navbar">
-        <div class="logo">AutoCluster AI</div>
+        <div class="logo">MobilMobilan</div>
         <div class="nav-links">
             <a href="/" class="active">List Mobil</a>
+            <a href="/add_car">Tambah Mobil</a>
             <a href="/predict">Beli Mobil</a>
             <a href="/sales">List Penjualan</a>
         </div>
@@ -28,6 +29,7 @@
             <table>
                 <thead>
                     <tr>
+                        <th>No</th>  <!-- KOLOM BARU -->
                         {% for col in columns %}
                         <th>
                             {% if col == 'cluster_name' %}Jenis Mobil{% else %}{{ col }}{% endif %}
@@ -36,19 +38,28 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for row in data %}
-                    <tr>
-                        {% for col in columns %}
-                        <td>
-                            {% if col == 'cluster_name' %}
-                                <span class="badge">{{ row[col] }}</span>
-                            {% else %}
-                                {{ row[col] }}
-                            {% endif %}
-                        </td>
+                    {% if data %}
+                        {% for row in data %}
+                        <tr>
+                            <td>{{ loop.index + (page - 1) * 50 }}</td> <!-- NOMOR URUT (50 per halaman) -->
+                            {% for col in columns %}
+                            <td>
+                                {% if col == 'cluster_name' %}
+                                    <span class="badge">{{ row[col] }}</span>
+                                {% else %}
+                                    {{ row[col] }}
+                                {% endif %}
+                            </td>
+                            {% endfor %}
+                        </tr>
                         {% endfor %}
-                    </tr>
-                    {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="{{ columns|length + 1 }}" style="text-align:center; padding:50px; color:#999;">
+                                Tidak ada data.
+                            </td>
+                        </tr>
+                    {% endif %}
                 </tbody>
             </table>
         </div>

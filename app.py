@@ -4,6 +4,7 @@ import pickle
 import json
 import os
 import math
+import re  # Untuk cleaning price
 
 app = Flask(__name__)
 
@@ -39,7 +40,30 @@ def get_data():
         return df
     return None
 
-# --- ROUTES ---
+# Function to clean price (mirip dari KMEANS.ipynb)
+def clean_price(price_str):
+    if not isinstance(price_str, str):
+        return None
+    price_str = re.sub(r'[\$, ]', '', price_str)  # Hapus $, comma, spasi
+    if '-' in price_str:
+        try:
+            low, high = map(float, price_str.split('-'))
+            return (low + high) / 2
+        except:
+            return None
+    try:
+        return float(price_str)
+    except:
+        return None
+
+# Function to clean seats
+def clean_seats(seats_str):
+    try:
+        return float(seats_str)
+    except:
+        return None
+
+# --- ROUTES EXISTING ---
 @app.route('/')
 def index():
     df = get_data()
@@ -165,6 +189,76 @@ def sales():
                            orders=page_data,
                            page=page,
                            total_pages=total_pages)
+
+# --- ROUTE BARU: TAMBAH MOBIL ---
+@app.route('/add_car', methods=['GET', 'POST'])
+def add_car():
+    error = None
+    if request.method == 'POST':
+        try:
+            # Ambil input dari form
+            company_names = request.form['company_names']
+            cars_names = request.form['cars_names']
+            engines = request.form['engines']
+            cc_battery = request.form['cc_battery']
+            horsepower = request.form['horsepower']
+            total_speed = request.form['total_speed']
+            performance = request.form['performance']
+            cars_prices = request.form['cars_prices']
+            fuel_types = request.form['fuel_types']
+            seats = request.form['seats']
+            torque = request.form['torque']
+
+            # Generate Car_Full_Name
+            car_full_name = f"{company_names.upper()} {cars_names.upper()}"
+
+            # Clean price and seats
+            price_cleaned = clean_price(cars_prices)
+            seats_cleaned = clean_seats(seats)
+
+            if price_cleaned is None or seats_cleaned is None:
+                raise ValueError("Input harga atau kursi tidak valid!")
+
+            # Predict cluster jika model ada
+            if model:
+                cluster_pred = model.predict([[price_cleaned, seats_cleaned]])[0]
+            else:
+                raise ValueError("Model tidak tersedia!")
+
+            # Load CSV existing
+            if os.path.exists(CSV_PATH):
+                df = pd.read_csv(CSV_PATH)
+            else:
+                raise FileNotFoundError("CSV tidak ditemukan!")
+
+            # Buat row baru
+            new_row = pd.DataFrame({
+                'Company Names': [company_names],
+                'Cars Names': [cars_names],
+                'Engines': [engines],
+                'CC/Battery Capacity': [cc_battery],
+                'HorsePower': [horsepower],
+                'Total Speed': [total_speed],
+                'Performance(0 - 100 )KM/H': [performance],
+                'Cars Prices': [cars_prices],
+                'Fuel Types': [fuel_types],
+                'Seats': [seats],
+                'Torque': [torque],
+                'Car_Full_Name': [car_full_name],
+                'Price_Cleaned': [price_cleaned],
+                'Seats_Cleaned': [seats_cleaned],
+                'cluster': [cluster_pred]
+            })
+
+            # Append dan simpan
+            df_updated = pd.concat([df, new_row], ignore_index=True)
+            df_updated.to_csv(CSV_PATH, index=False)
+
+            return redirect(url_for('index'))  # Redirect ke list mobil setelah sukses
+        except Exception as e:
+            error = str(e)
+
+    return render_template('add_car.html', error=error)
 
 if __name__ == '__main__':
     app.run(debug=True)
